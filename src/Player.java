@@ -10,6 +10,8 @@ public class Player {
         this.name = name;
         buildings.add(new Building("Weizenfeld", 1, 1, false, 0,"blue"));
         buildings.add(new Building("Bäckerei", 1, 2, true, 0,"green"));
+        landmarks.add(new Landmark("Rathaus", 0, true));
+        landmarks.add(new Landmark("Bahnhof", 4, false));
     }
 
     public String getName() { return name; }
@@ -31,5 +33,19 @@ public class Player {
             counts.put(b.getName(), counts.getOrDefault(b.getName(), 0) + 1);
         }
         return counts;
+    }
+
+    public List<Landmark> getUnbuiltLandmarks() {
+        List<Landmark> result = new ArrayList<>();
+        for (Landmark l : landmarks) {
+            if (!l.isBuilt()) {
+                result.add(l);
+            }
+        }
+        return result;
+    }
+
+    public Set<Landmark> getLandmarks() {
+        return landmarks;
     }
 }

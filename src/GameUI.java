@@ -18,6 +18,11 @@ public class GameUI extends JFrame{
 
     private boolean hasRolled = false;
 
+    private JComboBox<String> landmarkSelector;
+    private JButton buildLandmarkButton;
+    private JTextArea landmarkStatusArea;
+
+
     public GameUI(Game game) {
         this.game = game;
         setTitle("Machi Koro (Basis)");
@@ -38,6 +43,11 @@ public class GameUI extends JFrame{
         topPanel.add(playerLabel);
         topPanel.add(coinsLabel);
         add(topPanel, BorderLayout.NORTH);
+        landmarkStatusArea = new JTextArea(4, 30);
+        landmarkStatusArea.setEditable(false);
+        landmarkStatusArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JScrollPane landmarkScrollPane = new JScrollPane(landmarkStatusArea);
+        topPanel.add(landmarkScrollPane);
 
         // Center Panel: Würfelergebnis
         JPanel centerPanel = new JPanel();
@@ -83,6 +93,33 @@ public class GameUI extends JFrame{
         buyPanel.add(buildingSelector);
         buyPanel.add(buyButton);
         add(buyPanel, BorderLayout.EAST);
+
+        // Landmark-Panel
+        JPanel landmarkPanel = new JPanel();
+        landmarkPanel.setBorder(BorderFactory.createTitledBorder("Großprojekt bauen"));
+
+        landmarkSelector = new JComboBox<>();
+        buildLandmarkButton = new JButton("🏛️ Bauen");
+        buildLandmarkButton.setEnabled(false);
+
+        buildLandmarkButton.addActionListener(e -> {
+            int index = landmarkSelector.getSelectedIndex();
+            if (index < 0) return;
+
+            Landmark selected = game.getCurrentPlayer().getUnbuiltLandmarks().get(index);
+            Player player = game.getCurrentPlayer();
+
+            if (player.spendCoins(selected.getCost())) {
+                selected.build();
+                updateUI();
+            } else {
+                JOptionPane.showMessageDialog(this, "Nicht genug Münzen!");
+            }
+        });
+
+        landmarkPanel.add(landmarkSelector);
+        landmarkPanel.add(buildLandmarkButton);
+        add(landmarkPanel, BorderLayout.WEST);
 
         // Bottom Panel: Buttons
         JPanel buttonPanel = new JPanel();
@@ -130,5 +167,20 @@ public class GameUI extends JFrame{
                     .append(" x").append(entry.getValue()).append("\n");
         }
         buildingsArea.setText(sb.toString());
+
+        // Landmark-Dropdown aktualisieren
+        landmarkSelector.removeAllItems();
+        for (Landmark l : game.getCurrentPlayer().getUnbuiltLandmarks()) {
+            landmarkSelector.addItem(l.getName() + " (" + l.getCost() + "💰)");
+        }
+        buildLandmarkButton.setEnabled(hasRolled && landmarkSelector.getItemCount() > 0);
+
+        // Landmarken anzeigen
+        StringBuilder sbLandmarks = new StringBuilder("🏗️ Großprojekte:\n");
+        for (Landmark l : game.getCurrentPlayer().getLandmarks()) {
+            sbLandmarks.append("• ").append(l.toDisplayString())
+                    .append("\n");
+        }
+        landmarkStatusArea.setText(sbLandmarks.toString());
     }
 }

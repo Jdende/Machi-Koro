@@ -3,10 +3,10 @@ public class Landmark {
     private int cost;
     private boolean built;
 
-    public Landmark(String name, int cost) {
+    public Landmark(String name, int cost, boolean built) {
         this.name = name;
         this.cost = cost;
-        this.built = false;
+        this.built = built;
     }
 
     public String getName() {
@@ -28,5 +28,9 @@ public class Landmark {
     @Override
     public String toString() {
         return name + " (Kosten: " + cost + ", gebaut: " + built + ")";
+    }
+
+    public String toDisplayString() {
+        return name + " " + (built ? "✅" : "❌");
     }
 }
