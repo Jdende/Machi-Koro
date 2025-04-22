@@ -57,11 +57,18 @@ public class GameUI extends JFrame{
 
         buildingSelector = new JComboBox<>(options);
         buyButton = new JButton("🛒 Kaufen");
+        buyButton.setEnabled(false);
 
         buyButton.addActionListener(e -> {
+            if (!hasRolled) {
+                JOptionPane.showMessageDialog(this, "Du musst erst würfeln!");
+                return;
+            }
+
             int index = buildingSelector.getSelectedIndex();
-            Building selected = available.get(index);
+            Building selected = game.getAvailableBuildings().get(index);
             Player player = game.getCurrentPlayer();
+
             if (player.spendCoins(selected.getCost())) {
                 player.getBuildings().add(new Building(
                         selected.getName(), selected.getActivationNumber(),
@@ -88,6 +95,8 @@ public class GameUI extends JFrame{
             updateUI();
             rollButton.setEnabled(false);
             nextTurnButton.setEnabled(true);
+            buyButton.setEnabled(true);
+            hasRolled = true;
         });
 
         nextTurnButton.addActionListener(e -> {
@@ -95,6 +104,8 @@ public class GameUI extends JFrame{
             updateUI();
             rollButton.setEnabled(true);
             nextTurnButton.setEnabled(false);
+            buyButton.setEnabled(false);
+            hasRolled = false;
         });
 
         buttonPanel.add(rollButton);
