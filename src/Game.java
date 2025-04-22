@@ -52,4 +52,12 @@ public class Game {
     public void nextTurn() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
+
+    public List<Building> getAvailableBuildings() {
+        List<Building> buildings = new ArrayList<>();
+        buildings.add(new Building("Weizenfeld", 1, 1, false, 1, "blue"));
+        buildings.add(new Building("Bäckerei", 1, 1, true, 2,"green"));
+        // Optional: weitere Karten hier hinzufügen
+        return buildings;
+    }
 }

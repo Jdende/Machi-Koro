@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class GameUI extends JFrame{
     private Game game;
@@ -10,11 +11,18 @@ public class GameUI extends JFrame{
     private JButton rollButton;
     private JButton nextTurnButton;
 
+    private JTextArea buildingsArea;
+
+    private JComboBox<String> buildingSelector;
+    private JButton buyButton;
+
+    private boolean hasRolled = false;
+
     public GameUI(Game game) {
         this.game = game;
         setTitle("Machi Koro (Basis)");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(1920, 1080);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -22,6 +30,11 @@ public class GameUI extends JFrame{
         JPanel topPanel = new JPanel();
         playerLabel = new JLabel();
         coinsLabel = new JLabel();
+        buildingsArea = new JTextArea(5, 30);
+        buildingsArea.setEditable(false);
+        buildingsArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JScrollPane scrollPane = new JScrollPane(buildingsArea);
+        topPanel.add(scrollPane);
         topPanel.add(playerLabel);
         topPanel.add(coinsLabel);
         add(topPanel, BorderLayout.NORTH);
@@ -32,6 +45,37 @@ public class GameUI extends JFrame{
         rollResultLabel.setFont(new Font("Arial", Font.BOLD, 20));
         centerPanel.add(rollResultLabel);
         add(centerPanel, BorderLayout.CENTER);
+
+        // Kauf-Panel
+        JPanel buyPanel = new JPanel();
+        buyPanel.setBorder(BorderFactory.createTitledBorder("Gebäude kaufen"));
+
+        List<Building> available = game.getAvailableBuildings();
+        String[] options = available.stream()
+                .map(b -> b.getName() + " (" + b.getCost() + "💰)")
+                .toArray(String[]::new);
+
+        buildingSelector = new JComboBox<>(options);
+        buyButton = new JButton("🛒 Kaufen");
+
+        buyButton.addActionListener(e -> {
+            int index = buildingSelector.getSelectedIndex();
+            Building selected = available.get(index);
+            Player player = game.getCurrentPlayer();
+            if (player.spendCoins(selected.getCost())) {
+                player.getBuildings().add(new Building(
+                        selected.getName(), selected.getActivationNumber(),
+                        selected.getIncome(), selected.isSelfRoll(), selected.getCost(), selected.getColor()
+                ));
+                updateUI();
+            } else {
+                JOptionPane.showMessageDialog(this, "Nicht genug Münzen!");
+            }
+        });
+
+        buyPanel.add(buildingSelector);
+        buyPanel.add(buyButton);
+        add(buyPanel, BorderLayout.EAST);
 
         // Bottom Panel: Buttons
         JPanel buttonPanel = new JPanel();
@@ -67,5 +111,13 @@ public class GameUI extends JFrame{
         coinsLabel.setText("💰 Münzen: " + current.getCoins());
         int roll = game.getLastRoll();
         rollResultLabel.setText(roll > 0 ? "🎲 Gewürfelt: " + roll : "Noch nicht gewürfelt");
+
+        // Gebäudeübersicht aktualisieren
+        StringBuilder sb = new StringBuilder("📦 Gebäude:\n");
+        for (var entry : current.getBuildingCounts().entrySet()) {
+            sb.append("• ").append(entry.getKey())
+                    .append(" x").append(entry.getValue()).append("\n");
+        }
+        buildingsArea.setText(sb.toString());
     }
 }
