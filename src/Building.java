@@ -6,7 +6,7 @@ public class Building {
     private boolean selfRoll;
     private int cost;
 
-    public Building(String name, int activationNumber, int income, boolean selfRoll, int cost, String color) {
+    public Building(String name, int activationNumber, int income, boolean selfRoll, String color, int cost) {
         this.name = name;
         this.activationNumber = activationNumber;
         this.income = income;

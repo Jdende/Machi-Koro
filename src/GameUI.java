@@ -82,7 +82,7 @@ public class GameUI extends JFrame{
             if (player.spendCoins(selected.getCost())) {
                 player.getBuildings().add(new Building(
                         selected.getName(), selected.getActivationNumber(),
-                        selected.getIncome(), selected.isSelfRoll(), selected.getCost(), selected.getColor()
+                        selected.getIncome(), selected.isSelfRoll(), selected.getColor(), selected.getCost()
                 ));
                 updateUI();
             } else {
@@ -133,6 +133,7 @@ public class GameUI extends JFrame{
             rollButton.setEnabled(false);
             nextTurnButton.setEnabled(true);
             buyButton.setEnabled(true);
+            buildLandmarkButton.setEnabled(true);
             hasRolled = true;
         });
 
@@ -142,6 +143,7 @@ public class GameUI extends JFrame{
             rollButton.setEnabled(true);
             nextTurnButton.setEnabled(false);
             buyButton.setEnabled(false);
+            buildLandmarkButton.setEnabled(false);
             hasRolled = false;
         });
 

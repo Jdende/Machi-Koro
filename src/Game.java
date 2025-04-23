@@ -5,9 +5,13 @@ public class Game {
     private int currentPlayerIndex = 0;
     private int lastRoll = 0;
 
-    public Game() {
-        players.add(new Player("Spieler 1"));
-        players.add(new Player("Spieler 2"));
+    public Game(int playerCount) {
+        for (int i = 1; i <= playerCount; i++) {
+            Player player = new Player("Spieler " + i);
+            player.addStartingBuildings();
+            player.addStartingLandmarks();
+            players.add(player);
+        }
     }
 
     public Player getCurrentPlayer() {
@@ -55,8 +59,8 @@ public class Game {
 
     public List<Building> getAvailableBuildings() {
         List<Building> buildings = new ArrayList<>();
-        buildings.add(new Building("Weizenfeld", 1, 1, false, 1, "blue"));
-        buildings.add(new Building("Bäckerei", 1, 1, true, 2,"green"));
+        buildings.add(new Building("Weizenfeld", 1, 1, false, "blue", 1));
+        buildings.add(new Building("Bäckerei", 1, 1, true, "green", 2));
         // Optional: weitere Karten hier hinzufügen
         return buildings;
     }

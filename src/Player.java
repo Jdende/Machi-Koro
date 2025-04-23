@@ -2,16 +2,28 @@ import java.util.*;
 
 public class Player {
     private String name;
-    private int coins = 3;
-    private List<Building> buildings = new ArrayList<>();
-    private Set<Landmark> landmarks = new HashSet<>();
+    private int coins ;
+    private List<Building> buildings;
+    private List<Landmark> landmarks;
 
     public Player(String name) {
         this.name = name;
-        buildings.add(new Building("Weizenfeld", 1, 1, false, 0,"blue"));
-        buildings.add(new Building("Bäckerei", 1, 2, true, 0,"green"));
+        this.coins = 4;
+        this.buildings = new ArrayList<>();
+        this.landmarks = new ArrayList<>();
+    }
+
+    public void addStartingBuildings() {
+        buildings.add(new Building("Weizenfeld", 1, 1, false,"blue", 1));
+        buildings.add(new Building("Bäckerei", 2, 1, true,"green", 1));
+    }
+
+    public void addStartingLandmarks() {
         landmarks.add(new Landmark("Rathaus", 0, true));
         landmarks.add(new Landmark("Bahnhof", 4, false));
+        landmarks.add(new Landmark("Einkaufszentrum", 10, false));
+        landmarks.add(new Landmark("Freizeitpark", 16, false));
+        landmarks.add(new Landmark("Funkturm", 22, false));
     }
 
     public String getName() { return name; }
@@ -45,7 +57,7 @@ public class Player {
         return result;
     }
 
-    public Set<Landmark> getLandmarks() {
+    public List<Landmark> getLandmarks() {
         return landmarks;
     }
 }
