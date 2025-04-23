@@ -3,14 +3,12 @@ public class Building {
     private int activationNumber;
     private int income;
     private String color;
-    private boolean selfRoll;
     private int cost;
 
-    public Building(String name, int activationNumber, int income, boolean selfRoll, String color, int cost) {
+    public Building(String name, int activationNumber, int income, String color, int cost) {
         this.name = name;
         this.activationNumber = activationNumber;
         this.income = income;
-        this.selfRoll = selfRoll;
         this.cost = cost;
         this.color = color;
     }
@@ -20,5 +18,4 @@ public class Building {
     public int getIncome() { return income; }
     public String getColor() { return color; }
     public int getCost() { return cost; }
-    public boolean isSelfRoll() { return selfRoll; }
 }

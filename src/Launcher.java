@@ -2,6 +2,10 @@ import javax.swing.*;
 
 public class Launcher {
     public static void main(String[] args) {
+        startGame();
+    }
+
+    public static void startGame() {
         javax.swing.SwingUtilities.invokeLater(() -> {
             String[] options = { "2", "3", "4" };
             String selected = (String) JOptionPane.showInputDialog(
@@ -20,6 +24,5 @@ public class Launcher {
                 new GameUI(game);
             }
         });
-
     }
 }

@@ -31,11 +31,17 @@ public class Game {
     }
 
     // Würfeln und Einkommen verteilen
-    public void rollDice() {
-        lastRoll = Dice.roll();
-        System.out.println(getCurrentPlayer().getName() + " würfelt: " + lastRoll);
+    public int rollDice(int diceCount) {
+        if (diceCount == 2) {
+            lastRoll = Dice.roll() + Dice.roll();
+        } else {
+            lastRoll = Dice.roll();
+        }
+
         distributeIncome();
+        return lastRoll;
     }
+
 
     private void distributeIncome() {
         for (Player player : players) {
@@ -57,10 +63,14 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
+    public boolean hasWinner() {
+        return getCurrentPlayer().hasBuiltAllLandmarks();
+    }
+
     public List<Building> getAvailableBuildings() {
         List<Building> buildings = new ArrayList<>();
-        buildings.add(new Building("Weizenfeld", 1, 1, false, "blue", 1));
-        buildings.add(new Building("Bäckerei", 1, 1, true, "green", 2));
+        buildings.add(new Building("Weizenfeld", 1, 1,  "blue", 1));
+        buildings.add(new Building("Bäckerei", 1, 1,  "green", 2));
         // Optional: weitere Karten hier hinzufügen
         return buildings;
     }

@@ -22,7 +22,6 @@ public class GameUI extends JFrame{
     private JButton buildLandmarkButton;
     private JTextArea landmarkStatusArea;
 
-
     public GameUI(Game game) {
         this.game = game;
         setTitle("Machi Koro (Basis)");
@@ -82,7 +81,7 @@ public class GameUI extends JFrame{
             if (player.spendCoins(selected.getCost())) {
                 player.getBuildings().add(new Building(
                         selected.getName(), selected.getActivationNumber(),
-                        selected.getIncome(), selected.isSelfRoll(), selected.getColor(), selected.getCost()
+                        selected.getIncome(), selected.getColor(), selected.getCost()
                 ));
                 updateUI();
             } else {
@@ -128,13 +127,29 @@ public class GameUI extends JFrame{
         nextTurnButton.setEnabled(false);
 
         rollButton.addActionListener(e -> {
-            game.rollDice();
+            Player current = game.getCurrentPlayer();
+
+            int dice = 1;
+            if (current.hasTrainStation()) {
+                int choice = JOptionPane.showConfirmDialog(
+                        this,
+                        "Möchtest du mit 2 Würfeln werfen?",
+                        "Bahnhof aktiviert",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (choice == JOptionPane.YES_OPTION) {
+                    dice = 2;
+                }
+            }
+
+            int roll = game.rollDice(dice);
+            JOptionPane.showMessageDialog(this, "🎲 Du hast eine " + roll + " gewürfelt!");
+            hasRolled = true;
             updateUI();
             rollButton.setEnabled(false);
             nextTurnButton.setEnabled(true);
             buyButton.setEnabled(true);
             buildLandmarkButton.setEnabled(true);
-            hasRolled = true;
         });
 
         nextTurnButton.addActionListener(e -> {
@@ -184,5 +199,30 @@ public class GameUI extends JFrame{
                     .append("\n");
         }
         landmarkStatusArea.setText(sbLandmarks.toString());
+
+        if (game.hasWinner()) {
+            Player winner = game.getCurrentPlayer();
+            int option = JOptionPane.showOptionDialog(
+                    this,
+                    "🎉 " + winner.getName() + " hat alle Großprojekte gebaut und gewinnt das Spiel!\n" +
+                            "Was möchtest du als Nächstes tun?",
+                    "🏆 Spiel gewonnen",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null,
+                    new String[]{"🔁 Neustart","🚪 Beenden"},
+                    "🔁 Neustart"
+            );
+
+            switch (option) {
+                case 0 -> restartGame();
+                case 1 -> System.exit(0);
+            }
+        }
+    }
+
+    private void restartGame() {
+        Launcher.startGame();
+        dispose();
     }
 }

@@ -8,14 +8,14 @@ public class Player {
 
     public Player(String name) {
         this.name = name;
-        this.coins = 4;
+        this.coins = 100;
         this.buildings = new ArrayList<>();
         this.landmarks = new ArrayList<>();
     }
 
     public void addStartingBuildings() {
-        buildings.add(new Building("Weizenfeld", 1, 1, false,"blue", 1));
-        buildings.add(new Building("Bäckerei", 2, 1, true,"green", 1));
+        buildings.add(new Building("Weizenfeld", 1, 1, "blue", 1));
+        buildings.add(new Building("Bäckerei", 2, 1,"green", 1));
     }
 
     public void addStartingLandmarks() {
@@ -59,5 +59,14 @@ public class Player {
 
     public List<Landmark> getLandmarks() {
         return landmarks;
+    }
+
+    public boolean hasTrainStation() {
+        return landmarks.stream()
+                .anyMatch(l -> l.getName().equals("Bahnhof") && l.isBuilt());
+    }
+
+    public boolean hasBuiltAllLandmarks() {
+        return landmarks.stream().allMatch(Landmark::isBuilt);
     }
 }
