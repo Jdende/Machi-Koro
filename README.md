@@ -1,4 +1,4 @@
 # Symbole  
 0 = Markt  
-1 = Cafe  
-2 = Farm  
+1 = Farm 
+2 = Cafe
