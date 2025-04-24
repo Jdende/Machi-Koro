@@ -1,5 +1,5 @@
 # Symbole  
-0 = Markt  
+0 = Geschäft    
 1 = Farm   
 2 = Cafe  
 3 = Vieh  
