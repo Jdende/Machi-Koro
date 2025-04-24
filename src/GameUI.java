@@ -144,6 +144,12 @@ public class GameUI extends JFrame{
 
             int roll = game.rollDice(dice);
             JOptionPane.showMessageDialog(this, "🎲 Du hast eine " + roll + " gewürfelt!");
+
+            if(game.townHallEffectApplies()) {
+                JOptionPane.showMessageDialog(this, " Du erhältst eine Münze vom Rathaus");
+                game.setTownHallEffectApplies();
+            }
+
             hasRolled = true;
             updateUI();
             rollButton.setEnabled(false);

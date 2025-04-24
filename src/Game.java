@@ -1,9 +1,12 @@
+import javax.swing.*;
 import java.util.*;
+import java.util.List;
 
 public class Game {
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private int lastRoll = 0;
+    private boolean townHallEffectApplies = false;
 
     public Game(int playerCount) {
         for (int i = 1; i <= playerCount; i++) {
@@ -46,7 +49,8 @@ public class Game {
     private void distributeIncome() {
         for (Player player : players) {
             for (Building b : player.getBuildings()) {
-                if (b.getActivationNumber1() == lastRoll) {
+                if (b.getActivationNumber1() == lastRoll || b.getActivationNumber2() == lastRoll ||
+                        b.getActivationNumber3() == lastRoll) {
                     if (b.getColor().equals("blue")) {
                         player.addCoins(b.getIncome());
                     } else if (b.getColor().equals("green") && player == getCurrentPlayer()) {
@@ -55,6 +59,12 @@ public class Game {
                     // Rote Karten (Gegenspieler-Einkommen) lassen wir erstmal weg
                 }
             }
+        }
+
+        //Rathaus Effekt
+        if (getCurrentPlayer().getCoins() == 0) {
+            getCurrentPlayer().addCoins(1);
+            townHallEffectApplies = true;
         }
     }
 
@@ -65,6 +75,14 @@ public class Game {
 
     public boolean hasWinner() {
         return getCurrentPlayer().hasBuiltAllLandmarks();
+    }
+
+    public boolean townHallEffectApplies() {
+        return townHallEffectApplies;
+    }
+
+    public void setTownHallEffectApplies() {
+        townHallEffectApplies = false;
     }
 
     public List<Building> getAvailableBuildings() {
