@@ -8,7 +8,7 @@ public class Player {
 
     public Player(String name) {
         this.name = name;
-        this.coins = 0;
+        this.coins = 3;
         this.buildings = new ArrayList<>();
         this.landmarks = new ArrayList<>();
     }
