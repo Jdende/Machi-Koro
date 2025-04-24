@@ -3,7 +3,7 @@ import java.util.*;
 import java.util.List;
 
 public class Game {
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private int lastRoll = 0;
     private boolean townHallEffectApplies = false;
@@ -54,7 +54,7 @@ public class Game {
                     if (b.getColor().equals("red") && player != getCurrentPlayer() &&
                             getCurrentPlayer().getCoins() >= b.getIncome()) {
                         player.addCoins(b.getIncome());
-                        getCurrentPlayer().addCoins(-b.getIncome());
+                        getCurrentPlayer().spendCoins(b.getIncome());
                     } else if (b.getColor().equals("blue")) {
                         player.addCoins(b.getIncome());
                     } else if (b.getColor().equals("green") && player == getCurrentPlayer()) {
@@ -90,9 +90,9 @@ public class Game {
 
     public List<Building> getAvailableBuildings() {
         List<Building> buildings = new ArrayList<>();
-        buildings.add(new Building("Weizenfeld", 1, 0, 0, 1,  "blue", 1));
-        buildings.add(new Building("Bäckerei", 2, 3, 0, 1,  "green", 1));
-        buildings.add(new Building("Cafe", 3, 0, 0, 1, "red", 2));
+        buildings.add(new Building("Weizenfeld", 1, 0, 0, 1,  "blue", 1, 1));
+        buildings.add(new Building("Bäckerei", 2, 3, 0, 1,  "green", 1, 0));
+        buildings.add(new Building("Cafe", 3, 0, 0, 1, "red", 2, 2));
         // Optional: weitere Karten hier hinzufügen
         return buildings;
     }

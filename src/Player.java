@@ -1,21 +1,21 @@
 import java.util.*;
 
 public class Player {
-    private String name;
+    private final String name;
     private int coins ;
-    private List<Building> buildings;
-    private List<Landmark> landmarks;
+    private final List<Building> buildings;
+    private final List<Landmark> landmarks;
 
     public Player(String name) {
         this.name = name;
-        this.coins = 3;
+        this.coins = 10;
         this.buildings = new ArrayList<>();
         this.landmarks = new ArrayList<>();
     }
 
     public void addStartingBuildings() {
-        buildings.add(new Building("Weizenfeld", 1, 0, 0, 1, "blue", 1));
-        buildings.add(new Building("Bäckerei", 2, 3, 0, 1,"green", 1));
+        buildings.add(new Building("Weizenfeld", 1, 0, 0, 1, "blue", 1, 1));
+        buildings.add(new Building("Bäckerei", 2, 3, 0, 1,"green", 1, 0));
     }
 
     public void addStartingLandmarks() {
@@ -62,11 +62,22 @@ public class Player {
     }
 
     public boolean hasTrainStation() {
-        return landmarks.stream()
-                .anyMatch(l -> l.getName().equals("Bahnhof") && l.isBuilt());
+        return landmarks.stream().anyMatch(l -> l.getName().equals("Bahnhof") && l.isBuilt());
+    }
+
+    public boolean hasShoppingMall() {
+        return landmarks.stream().anyMatch(l -> l.getName().equals("Einkaufszentrum") && l.isBuilt());
     }
 
     public boolean hasBuiltAllLandmarks() {
         return landmarks.stream().allMatch(Landmark::isBuilt);
+    }
+
+    public void activateShoppingMall() {
+        for (Building b: buildings) {
+            if (b.getSymbole() == 0 || b.getSymbole() == 2) {
+                b.setIncome(1);
+            }
+        }
     }
 }

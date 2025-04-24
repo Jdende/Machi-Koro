@@ -3,24 +3,24 @@ import java.awt.*;
 import java.util.List;
 
 public class GameUI extends JFrame{
-    private Game game;
+    private final Game game;
 
-    private JLabel playerLabel;
-    private JLabel coinsLabel;
-    private JLabel rollResultLabel;
-    private JButton rollButton;
-    private JButton nextTurnButton;
+    private final JLabel playerLabel;
+    private final JLabel coinsLabel;
+    private final JLabel rollResultLabel;
+    private final JButton rollButton;
+    private final JButton nextTurnButton;
 
-    private JTextArea buildingsArea;
+    private final JTextArea buildingsArea;
 
-    private JComboBox<String> buildingSelector;
-    private JButton buyButton;
+    private final JComboBox<String> buildingSelector;
+    private final JButton buyButton;
 
     private boolean hasRolled = false;
 
-    private JComboBox<String> landmarkSelector;
-    private JButton buildLandmarkButton;
-    private JTextArea landmarkStatusArea;
+    private final JComboBox<String> landmarkSelector;
+    private final JButton buildLandmarkButton;
+    private final JTextArea landmarkStatusArea;
 
     public GameUI(int playerCount) {
         this.game = new Game(playerCount);
@@ -81,7 +81,8 @@ public class GameUI extends JFrame{
             if (player.spendCoins(selected.getCost())) {
                 player.getBuildings().add(new Building(
                         selected.getName(), selected.getActivationNumber1(), selected.getActivationNumber2(),
-                        selected.getActivationNumber3(), selected.getIncome(), selected.getColor(), selected.getCost()
+                        selected.getActivationNumber3(), selected.getIncome(), selected.getColor(), selected.getCost(),
+                        selected.getSymbole()
                 ));
                 updateUI();
             } else {
@@ -111,6 +112,10 @@ public class GameUI extends JFrame{
             if (player.spendCoins(selected.getCost())) {
                 selected.build();
                 updateUI();
+                if (selected.getName().equals("Einkaufszentrum")) {
+                    player.activateShoppingMall();
+                    System.out.println("active");
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Nicht genug Münzen!");
             }

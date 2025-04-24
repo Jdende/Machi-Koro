@@ -1,13 +1,14 @@
 public class Building {
-    private String name;
-    private int activationNumber1;
-    private int activationNumber2;
-    private int activationNumber3;
+    private final String name;
+    private final int activationNumber1;
+    private final int activationNumber2;
+    private final int activationNumber3;
     private int income;
-    private String color;
-    private int cost;
+    private final String color;
+    private final int cost;
+    private final int symbole;
 
-    public Building(String name, int activationNumber1, int activationNumber2, int activationNumber3, int income, String color, int cost) {
+    public Building(String name, int activationNumber1, int activationNumber2, int activationNumber3, int income, String color, int cost, int symbole) {
         this.name = name;
         this.activationNumber1 = activationNumber1;
         this.activationNumber2 = activationNumber2;
@@ -15,6 +16,7 @@ public class Building {
         this.income = income;
         this.cost = cost;
         this.color = color;
+        this.symbole = symbole;
     }
 
     public String getName() { return name; }
@@ -29,4 +31,11 @@ public class Building {
     public int getIncome() { return income; }
     public String getColor() { return color; }
     public int getCost() { return cost; }
+    public int getSymbole() {
+        return symbole;
+    }
+
+    public void setIncome(int amount) {
+        income += amount;
+    }
 }

@@ -1,6 +1,6 @@
 public class Landmark {
-    private String name;
-    private int cost;
+    private final String name;
+    private final int cost;
     private boolean built;
 
     public Landmark(String name, int cost, boolean built) {
