@@ -14,8 +14,8 @@ public class Player {
     }
 
     public void addStartingBuildings() {
-        buildings.add(new Building("Weizenfeld", 1, 1, "blue", 1));
-        buildings.add(new Building("Bäckerei", 2, 1,"green", 1));
+        buildings.add(new Building("Weizenfeld", 1, 0, 0, 1, "blue", 1));
+        buildings.add(new Building("Bäckerei", 2, 3, 0, 1,"green", 1));
     }
 
     public void addStartingLandmarks() {

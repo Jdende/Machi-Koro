@@ -22,8 +22,8 @@ public class GameUI extends JFrame{
     private JButton buildLandmarkButton;
     private JTextArea landmarkStatusArea;
 
-    public GameUI(Game game) {
-        this.game = game;
+    public GameUI(int playerCount) {
+        this.game = new Game(playerCount);
         setTitle("Machi Koro (Basis)");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1920, 1080);
@@ -80,8 +80,8 @@ public class GameUI extends JFrame{
 
             if (player.spendCoins(selected.getCost())) {
                 player.getBuildings().add(new Building(
-                        selected.getName(), selected.getActivationNumber(),
-                        selected.getIncome(), selected.getColor(), selected.getCost()
+                        selected.getName(), selected.getActivationNumber1(), selected.getActivationNumber2(),
+                        selected.getActivationNumber3(), selected.getIncome(), selected.getColor(), selected.getCost()
                 ));
                 updateUI();
             } else {
@@ -210,7 +210,7 @@ public class GameUI extends JFrame{
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
-                    new String[]{"🔁 Neustart","🚪 Beenden"},
+                    new String[]{"🔁 Zurück zum Hauptmenü","🚪 Beenden"},
                     "🔁 Neustart"
             );
 
@@ -222,7 +222,7 @@ public class GameUI extends JFrame{
     }
 
     private void restartGame() {
-        Launcher.startGame();
+        new MainMenu().setVisible(true);
         dispose();
     }
 }

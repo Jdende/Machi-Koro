@@ -46,7 +46,7 @@ public class Game {
     private void distributeIncome() {
         for (Player player : players) {
             for (Building b : player.getBuildings()) {
-                if (b.getActivationNumber() == lastRoll) {
+                if (b.getActivationNumber1() == lastRoll) {
                     if (b.getColor().equals("blue")) {
                         player.addCoins(b.getIncome());
                     } else if (b.getColor().equals("green") && player == getCurrentPlayer()) {
@@ -69,8 +69,8 @@ public class Game {
 
     public List<Building> getAvailableBuildings() {
         List<Building> buildings = new ArrayList<>();
-        buildings.add(new Building("Weizenfeld", 1, 1,  "blue", 1));
-        buildings.add(new Building("Bäckerei", 1, 1,  "green", 2));
+        buildings.add(new Building("Weizenfeld", 1, 0, 0, 1,  "blue", 1));
+        buildings.add(new Building("Bäckerei", 2, 3, 0, 1,  "green", 1));
         // Optional: weitere Karten hier hinzufügen
         return buildings;
     }
