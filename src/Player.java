@@ -69,6 +69,10 @@ public class Player {
         return landmarks.stream().anyMatch(l -> l.getName().equals("Freizeitpark") && l.isBuilt());
     }
 
+    public boolean hasRadioTower() {
+        return landmarks.stream().anyMatch(l -> l.getName().equals("Funkturm") && l.isBuilt());
+    }
+
     public boolean hasBuiltAllLandmarks() {
         return landmarks.stream().allMatch(Landmark::isBuilt);
     }
