@@ -16,11 +16,13 @@ public class GameUI extends JFrame{
     private final JComboBox<String> buildingSelector;
     private final JButton buyButton;
 
-    private boolean hasRolled = false;
-
     private final JComboBox<String> landmarkSelector;
     private final JButton buildLandmarkButton;
     private final JTextArea landmarkStatusArea;
+
+    private boolean oneTurn = true;
+    private boolean secondTurn = false;
+    private boolean skipTurn = false;
 
     public GameUI(int playerCount) {
         this.game = new Game(playerCount);
@@ -65,15 +67,20 @@ public class GameUI extends JFrame{
                 .toArray(String[]::new);
 
         buildingSelector = new JComboBox<>(options);
+
+        //Buttons
         buyButton = new JButton("🛒 Kaufen");
         buyButton.setEnabled(false);
 
-        buyButton.addActionListener(e -> {
-            if (!hasRolled) {
-                JOptionPane.showMessageDialog(this, "Du musst erst würfeln!");
-                return;
-            }
+        buildLandmarkButton = new JButton("🏛️ Bauen");
+        buildLandmarkButton.setEnabled(false);
 
+        rollButton = new JButton("🎲 Würfeln");
+
+        nextTurnButton = new JButton("➡️ Nächster Spieler");
+        nextTurnButton.setEnabled(false);
+
+        buyButton.addActionListener(e -> {
             int index = buildingSelector.getSelectedIndex();
             Building selected = game.getAvailableBuildings().get(index);
             Player player = game.getCurrentPlayer();
@@ -85,6 +92,10 @@ public class GameUI extends JFrame{
                         selected.getSymbole()
                 ));
                 updateUI();
+                buildLandmarkButton.setEnabled(false);
+                buyButton.setEnabled(false);
+                oneTurn = true;
+                secondTurn = true;
             } else {
                 JOptionPane.showMessageDialog(this, "Nicht genug Münzen!");
             }
@@ -99,8 +110,6 @@ public class GameUI extends JFrame{
         landmarkPanel.setBorder(BorderFactory.createTitledBorder("Großprojekt bauen"));
 
         landmarkSelector = new JComboBox<>();
-        buildLandmarkButton = new JButton("🏛️ Bauen");
-        buildLandmarkButton.setEnabled(false);
 
         buildLandmarkButton.addActionListener(e -> {
             int index = landmarkSelector.getSelectedIndex();
@@ -109,13 +118,25 @@ public class GameUI extends JFrame{
             Landmark selected = game.getCurrentPlayer().getUnbuiltLandmarks().get(index);
             Player player = game.getCurrentPlayer();
 
+            //Großprojekt bauen und Nachricht dazu
             if (player.spendCoins(selected.getCost())) {
                 selected.build();
                 updateUI();
+                if (selected.getName().equals("Bahnhof")) {
+                    JOptionPane.showMessageDialog(this, "Du darfst ab jetzt mit zwei Würfeln würfeln!");
+                }
                 if (selected.getName().equals("Einkaufszentrum")) {
                     player.activateShoppingMall();
-                    System.out.println("active");
+                    JOptionPane.showMessageDialog(this,
+                            "Du erhältst ab jetzt eine Münze mehr für alle deine Geschäfts und Gastronomie Unternehmen!");
                 }
+                if (selected.getName().equals("Freizeitpark")) {
+                    JOptionPane.showMessageDialog(this, "Wenn du einen Pasch würfelst, hast du einen weiteren Zug!");
+                }
+                buildLandmarkButton.setEnabled(false);
+                buyButton.setEnabled(false);
+                oneTurn = true;
+                secondTurn = true;
             } else {
                 JOptionPane.showMessageDialog(this, "Nicht genug Münzen!");
             }
@@ -125,14 +146,34 @@ public class GameUI extends JFrame{
         landmarkPanel.add(buildLandmarkButton);
         add(landmarkPanel, BorderLayout.WEST);
 
-        // Bottom Panel: Buttons
+        // Bottom Panel
         JPanel buttonPanel = new JPanel();
-        rollButton = new JButton("🎲 Würfeln");
-        nextTurnButton = new JButton("➡️ Nächster Spieler");
-        nextTurnButton.setEnabled(false);
 
         rollButton.addActionListener(e -> {
             Player current = game.getCurrentPlayer();
+
+            if (game.hasRolledPair() && current.hasAmusementPark() && !oneTurn) {
+                int option = JOptionPane.showOptionDialog(
+                        this,
+                        "Möchtest du wirklich ohne etwas zu bauen erneut würfeln",
+                        "Zweiter Zug",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        new String[]{"Ja","Nein"},
+                        "Ja"
+                );
+
+                switch (option) {
+                    case 0 -> {
+                        oneTurn = true;
+                        secondTurn = true;
+                    }
+                    case 1 -> {return;}
+                }
+            }
+
+            game.setRolledPair();
 
             int dice = 1;
             if (current.hasTrainStation()) {
@@ -148,29 +189,71 @@ public class GameUI extends JFrame{
             }
 
             int roll = game.rollDice(dice);
-            JOptionPane.showMessageDialog(this, "🎲 Du hast eine " + roll + " gewürfelt!");
+            if (game.hasRolledPair() && !secondTurn) {
+                JOptionPane.showMessageDialog(this, "🎲 Du hast einen " + roll/2 + "er Pasch (" + roll + ") gewürfelt!");
+                if (current.hasAmusementPark()) {
+                    JOptionPane.showMessageDialog(this, "Du hast einen weiteren Zug!");
+                    oneTurn = false;
+                    skipTurn = true;
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "🎲 Du hast eine " + roll + " gewürfelt!");
+            }
 
             if(game.townHallEffectApplies()) {
-                JOptionPane.showMessageDialog(this, " Du erhältst eine Münze vom Rathaus");
+                JOptionPane.showMessageDialog(this, " Du erhältst eine Münze vom Rathaus!");
                 game.setTownHallEffectApplies();
             }
 
-            hasRolled = true;
             updateUI();
-            rollButton.setEnabled(false);
+            if (oneTurn) {
+                rollButton.setEnabled(false);
+            }
             nextTurnButton.setEnabled(true);
             buyButton.setEnabled(true);
             buildLandmarkButton.setEnabled(true);
         });
 
         nextTurnButton.addActionListener(e -> {
+            Player current = game.getCurrentPlayer();
+
+            if (game.hasRolledPair() && current.hasAmusementPark() && skipTurn) {
+                int option = JOptionPane.showOptionDialog(
+                        this,
+                        "Möchtest du wirklich deinen zweiten Zug abgeben",
+                        "Zug abgegeben",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        new String[]{"Ja","Nein"},
+                        "Ja"
+                );
+
+                switch (option) {
+                    case 0 -> {
+                        oneTurn = true;
+                        secondTurn = false;
+                        skipTurn = false;
+                        game.nextTurn();
+                        updateUI();
+                        rollButton.setEnabled(true);
+                        nextTurnButton.setEnabled(false);
+                        buyButton.setEnabled(false);
+                        buildLandmarkButton.setEnabled(false);
+                        return;
+                    }
+                    case 1 -> {return;}
+                }
+            }
+
+            secondTurn = false;
+            skipTurn = false;
             game.nextTurn();
             updateUI();
             rollButton.setEnabled(true);
             nextTurnButton.setEnabled(false);
             buyButton.setEnabled(false);
             buildLandmarkButton.setEnabled(false);
-            hasRolled = false;
         });
 
         buttonPanel.add(rollButton);
@@ -201,7 +284,6 @@ public class GameUI extends JFrame{
         for (Landmark l : game.getCurrentPlayer().getUnbuiltLandmarks()) {
             landmarkSelector.addItem(l.getName() + " (" + l.getCost() + "💰)");
         }
-        buildLandmarkButton.setEnabled(hasRolled && landmarkSelector.getItemCount() > 0);
 
         // Landmarken anzeigen
         StringBuilder sbLandmarks = new StringBuilder("🏗️ Großprojekte:\n");

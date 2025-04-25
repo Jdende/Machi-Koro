@@ -8,7 +8,7 @@ public class Player {
 
     public Player(String name) {
         this.name = name;
-        this.coins = 10;
+        this.coins = 3;
         this.buildings = new ArrayList<>();
         this.landmarks = new ArrayList<>();
     }
@@ -65,8 +65,8 @@ public class Player {
         return landmarks.stream().anyMatch(l -> l.getName().equals("Bahnhof") && l.isBuilt());
     }
 
-    public boolean hasShoppingMall() {
-        return landmarks.stream().anyMatch(l -> l.getName().equals("Einkaufszentrum") && l.isBuilt());
+    public boolean hasAmusementPark() {
+        return landmarks.stream().anyMatch(l -> l.getName().equals("Freizeitpark") && l.isBuilt());
     }
 
     public boolean hasBuiltAllLandmarks() {

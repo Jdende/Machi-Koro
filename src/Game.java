@@ -7,6 +7,7 @@ public class Game {
     private int currentPlayerIndex = 0;
     private int lastRoll = 0;
     private boolean townHallEffectApplies = false;
+    private boolean rolledPair = false;
 
     public Game(int playerCount) {
         for (int i = 1; i <= playerCount; i++) {
@@ -36,7 +37,12 @@ public class Game {
     // Würfeln und Einkommen verteilen
     public int rollDice(int diceCount) {
         if (diceCount == 2) {
-            lastRoll = Dice.roll() + Dice.roll();
+            int dice1 = Dice.roll();
+            int dice2 = Dice.roll();
+            lastRoll = dice1 + dice2;
+            if (dice1 == dice2) {
+                rolledPair = true;
+            }
         } else {
             lastRoll = Dice.roll();
         }
@@ -86,6 +92,14 @@ public class Game {
 
     public void setTownHallEffectApplies() {
         townHallEffectApplies = false;
+    }
+
+    public boolean hasRolledPair() {
+        return rolledPair;
+    }
+
+    public void setRolledPair() {
+        rolledPair = false;
     }
 
     public List<Building> getAvailableBuildings() {
