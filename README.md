@@ -9,4 +9,6 @@
 
 # ToDO
 - Effekt des Freizeitparks so anpassen, dass der Button "nächster Spieler" zu "nächster Zug" wird.  
-- Restliche Karten des Basisspiels implementieren.   
+- Restliche Karten des Basisspiels implementieren.  
+- Einkommensverteilung in der GUI anzeigen
+- Klasse GameUI aufräumen
